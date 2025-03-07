@@ -198,8 +198,8 @@ public class Register extends javax.swing.JFrame {
                                + "'"+ln.getText()+"',"
                                + "'"+un.getText()+"',"
                                + "'"+em.getText()+"',"
-                               + "'"+pw.getText()+"',"
-                               + "'"+rl.getSelectedItem()+"')");
+                               + "'"+rl.getSelectedItem()+"',"
+                               + "'"+pw.getText()+"')");
                    if (result == 1) {
                        JOptionPane.showMessageDialog(null, "Inserted Successfully!");
                        new login().setVisible(true);
