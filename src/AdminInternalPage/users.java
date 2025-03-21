@@ -1,31 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package internalframe;
+
+package AdminInternalPage;
 
 import config.connectDB;
+import internalDialog.Adduser;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JDesktopPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import net.proteanit.sql.DbUtils;
 
-
-
-
-/**
- *
- * @author SCC-COLLEGE
- */
 public class users extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form users
-     */
     public users() {
         initComponents();
         displayData();
+        
         //remove border
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
@@ -54,7 +43,7 @@ public class users extends javax.swing.JInternalFrame {
         sds = new javax.swing.JScrollPane();
         user_tbl = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        add_button = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
@@ -86,15 +75,15 @@ public class users extends javax.swing.JInternalFrame {
         jPanel1.add(jButton1);
         jButton1.setBounds(380, 310, 73, 40);
 
-        jButton2.setBackground(new java.awt.Color(102, 102, 102));
-        jButton2.setText("Add");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        add_button.setBackground(new java.awt.Color(102, 102, 102));
+        add_button.setText("Add");
+        add_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                add_buttonActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2);
-        jButton2.setBounds(20, 310, 63, 40);
+        jPanel1.add(add_button);
+        add_button.setBounds(20, 310, 63, 40);
 
         jButton3.setBackground(new java.awt.Color(102, 102, 102));
         jButton3.setText("Edit");
@@ -134,9 +123,13 @@ public class users extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void add_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_buttonActionPerformed
+ JDesktopPane desktopPane = this.getDesktopPane();
+        if (desktopPane != null) {
+            Adduser.addUserDialog(desktopPane);
+         
+        }
+    }//GEN-LAST:event_add_buttonActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
@@ -148,8 +141,8 @@ public class users extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add_button;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
