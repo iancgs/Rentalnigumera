@@ -1,10 +1,22 @@
 
 package internalDialog;
 
+import config.connectDB;
 import java.awt.Point;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import rental.tracker.Register;
 
 public class Adduser extends javax.swing.JDialog {
     private static Adduser instance;  
@@ -55,13 +67,14 @@ public class Adduser extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         un = new javax.swing.JTextField();
-        em = new javax.swing.JTextField();
+        pw = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        em1 = new javax.swing.JTextField();
+        em = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        rl = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
+        status = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -99,8 +112,8 @@ public class Adduser extends javax.swing.JDialog {
         un.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel3.add(un, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 220, 40));
 
-        em.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel3.add(em, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 270, 220, 40));
+        pw.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.add(pw, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 270, 220, 40));
 
         jLabel8.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel8.setText("Password   :");
@@ -114,19 +127,24 @@ public class Adduser extends javax.swing.JDialog {
         });
         jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 350, 90, 30));
 
-        em1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel3.add(em1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 170, 220, 40));
+        em.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.add(em, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 170, 220, 40));
 
         jLabel9.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel9.setText("Email      :");
         jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 170, 70, 40));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "User" }));
-        jPanel3.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 220, 40));
+        rl.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "User" }));
+        jPanel3.add(rl, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 220, 40));
 
         jLabel10.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel10.setText("Role       :");
         jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, 70, 40));
+
+        status.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 12)); // NOI18N
+        status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Approved", "Pending" }));
+        status.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 320, 140, 30));
 
         jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 440, 400));
 
@@ -147,7 +165,99 @@ public class Adduser extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+          String fname = fn.getText();
+    String lname = ln.getText();
+    String uname = un.getText();
+    String email = em.getText();
+    String pass1 = pw.getText();
+
+    // Validation: Check if any required fields are empty
+    if (fname.isEmpty() || lname.isEmpty() || uname.isEmpty() || email.isEmpty() || pass1.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Password validation: Minimum length of 8 characters
+    if (pass1.length() < 8) {
+        JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Email format validation
+    String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    Pattern pattern = Pattern.compile(emailRegex);
+    Matcher matcher = pattern.matcher(email);
+    if (!matcher.matches()) {
+        JOptionPane.showMessageDialog(null, "Invalid email format!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    connectDB con = new connectDB();
+    Connection cn = con.getConnection();
+
+    if (cn == null) {
+        JOptionPane.showMessageDialog(null, "Database connection failed!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        // Check if email already exists
+        String checkEmailSql = "SELECT COUNT(*) FROM user WHERE email = ?";
+        try (PreparedStatement emailPst = cn.prepareStatement(checkEmailSql)) {
+            emailPst.setString(1, email);
+            ResultSet rsEmail = emailPst.executeQuery();
+            if (rsEmail.next() && rsEmail.getInt(1) > 0) {
+                JOptionPane.showMessageDialog(null, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        // Check if username already exists
+        String checkUsernameSql = "SELECT COUNT(*) FROM user WHERE username = ?";
+        try (PreparedStatement ps = cn.prepareStatement(checkUsernameSql)) {
+            ps.setString(1, uname);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                JOptionPane.showMessageDialog(null, "Username is already taken!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        // Insert new user securely (without password hashing)
+        String insertQuery = "INSERT INTO user (f_name, l_name, username, email, role, password, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pst = cn.prepareStatement(insertQuery)) {
+            pst.setString(1, fname);
+            pst.setString(2, lname);
+            pst.setString(3, uname);
+            pst.setString(4, email);
+            pst.setString(5, rl.getSelectedItem().toString());  // Assuming role is being selected
+            pst.setString(6, pass1);  // Store the plain password (not hashed)
+            pst.setString(7, status.getSelectedItem().toString()); // Assuming status is being selected
+
+            int result = pst.executeUpdate();
+            if (result > 0) {
+                JOptionPane.showMessageDialog(null, "User registered successfully!");
+
+                // Close the registration form (JDialog)
+                JDialog parentDialog = (JDialog) SwingUtilities.getWindowAncestor(this);
+                if (parentDialog != null) {
+                    parentDialog.dispose();  // Closes the JDialog
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Registration failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } catch (SQLException ex) {
+        // Improved error handling: Displaying a more user-friendly error message
+        JOptionPane.showMessageDialog(null, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    } finally {
+        try {
+            if (cn != null) cn.close(); // Close database connection
+        } catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -194,10 +304,8 @@ public class Adduser extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField em;
-    private javax.swing.JTextField em1;
     private javax.swing.JTextField fn;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -209,6 +317,9 @@ public class Adduser extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField ln;
+    private javax.swing.JTextField pw;
+    private javax.swing.JComboBox<String> rl;
+    public javax.swing.JComboBox<String> status;
     private javax.swing.JTextField un;
     // End of variables declaration//GEN-END:variables
 
