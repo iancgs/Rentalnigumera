@@ -1,20 +1,56 @@
 
 package AdminInternalPage;
 
-import internalDialog.addTenant;
+import config.connectDB;
+import internalDialog.AddTenants;
+import internalDialog.InternalFrame;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableModel;
 
 public class Tenant extends javax.swing.JInternalFrame {
 
     public Tenant() {
         initComponents();
+        displayData();
         
          //remove border
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
     }
+    
+public void displayData(){
+    connectDB dbc = new connectDB();
+    try {
+        String query = "SELECT t.tenant_id, t.full_name, t.contact_number, p.type, p.compound, t.move_in_date " +
+                       "FROM tenant t " +
+                       "JOIN properties p ON t.property_id = p.property_id";
+        ResultSet rs = dbc.getData(query);         
+
+        DefaultTableModel model = (DefaultTableModel) property_tbl.getModel();
+        model.setRowCount(0); // clear existing rows
+
+        while(rs.next()) {
+            model.addRow(new String[]{
+                rs.getString("tenant_id"),
+                rs.getString("full_name"),
+                rs.getString("contact_number"),
+                rs.getString("type"),
+                rs.getString("compound"),
+                rs.getString("move_in_date")
+            });             
+        }
+
+    } catch(SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Error loading joined data: " + ex.getMessage());
+    }
+}
+
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -111,7 +147,7 @@ public class Tenant extends javax.swing.JInternalFrame {
 
     private void add_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_buttonActionPerformed
         JDialog dialog = new JDialog(); // Create a floating window
-        addTenant newPanel = new addTenant();
+        InternalFrame newPanel = new InternalFrame();
 
         dialog.add(newPanel);
         dialog.pack();

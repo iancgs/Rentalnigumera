@@ -9,16 +9,22 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 
-public class selectProperty extends javax.swing.JPanel {
+public class SelectProperty extends javax.swing.JInternalFrame {
 
-    public selectProperty() {
+    public SelectProperty() {
         initComponents();
         displayData();
+        
+           this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
+        BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
+        bi.setNorthPane(null);
     }
     
     public void displayData(){
@@ -34,8 +40,7 @@ public class selectProperty extends javax.swing.JPanel {
                    rs.getString(3), 
                    rs.getString(4), 
                    rs.getString(5), 
-                   rs.getString(6), 
-                   rs.getString(7)});                     
+                   rs.getString(6)});             
            }
         }catch(SQLException ex){
             System.out.println("Errors: "+ex.getMessage());
@@ -118,11 +123,11 @@ public class selectProperty extends javax.swing.JPanel {
         });
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 390, -1, -1));
 
-        jLabel2.setText("yy-mm-dd");
+        jLabel2.setText("yyyy-mm-dd");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 210, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 746, Short.MAX_VALUE)
@@ -134,13 +139,15 @@ public class selectProperty extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 470, Short.MAX_VALUE)
+            .addGap(0, 474, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inActionPerformed
@@ -154,47 +161,38 @@ public class selectProperty extends javax.swing.JPanel {
     private void proceedBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceedBtnActionPerformed
         String In = in.getText().trim();
         String Out = out.getText().trim();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//
-//        try {
-//            LocalDate.parse(In, formatter);
-//        } catch (DateTimeParseException e) {
-//            JOptionPane.showMessageDialog(null, "Invalid date format for 'In'. Please use yyyy-MM-dd.");
-//            return;
-//        }
-//
-//        try {
-//            LocalDate.parse(Out, formatter);
-//        } catch (DateTimeParseException e) {
-//            JOptionPane.showMessageDialog(null, "Invalid date format for 'Out'. Please use yyyy-MM-dd.");
-//            return;
-//        }
+                try {
+                        LocalDate.parse(In, formatter);
+                    } catch (DateTimeParseException e) {
+                        JOptionPane.showMessageDialog(null, "Invalid date format for 'In'. Please use yyyy-MM-dd.");
+                        return;
+                    }
         
+                try {
+                        LocalDate.parse(Out, formatter);
+                    } catch (DateTimeParseException e) {
+                        JOptionPane.showMessageDialog(null, "Invalid date format for 'Out'. Please use yyyy-MM-dd.");
+                        return;
+                    }
+
         TenantSession session = TenantSession.getInstance();
-        
+
         session.setMoveInDate(In);
         session.setMoveOutDate(Out);
-        
+
         System.out.println("Out: " + In);
         System.out.println("In: " + Out);
-        
-        JOptionPane.showMessageDialog(null, "Proceeding...");
-        
-         Window parentWindow = SwingUtilities.getWindowAncestor(this);
-        if (parentWindow instanceof JDialog) {
-            parentWindow.dispose();
-        }
 
-        review spPanel = new review();
-        JDialog dialog = new JDialog(); 
-        dialog.setTitle("Select Property");
-        dialog.setModal(true); 
-        dialog.setContentPane(spPanel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
+        JOptionPane.showMessageDialog(null, "Proceeding...");
+        Reviews rev = new Reviews();
+        JDesktopPane desktop = this.getDesktopPane();
+        desktop.add(rev);
+        rev.setVisible(true);
         
+
     }//GEN-LAST:event_proceedBtnActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -210,7 +208,7 @@ public class selectProperty extends javax.swing.JPanel {
         String Compound = properties_tbl.getValueAt(selectedRow, 2).toString();
         String Capacity = properties_tbl.getValueAt(selectedRow, 3).toString();
         String Price = properties_tbl.getValueAt(selectedRow, 4).toString();
-        
+
         TenantSession session = TenantSession.getInstance();
 
         session.setPname(Name);
@@ -219,9 +217,9 @@ public class selectProperty extends javax.swing.JPanel {
         session.setPcapacity(Capacity);
         session.setPprice(Price);
 
-        JOptionPane.showMessageDialog(this, 
-            "Property \"" + Name + "\" has been successfully booked!", 
-            "Booking Confirmed", 
+        JOptionPane.showMessageDialog(this,
+            "Property \"" + Name + "\" has been successfully booked!",
+            "Booking Confirmed",
             JOptionPane.INFORMATION_MESSAGE);
 
         System.out.println("Name: " + Name);
@@ -229,7 +227,6 @@ public class selectProperty extends javax.swing.JPanel {
         System.out.println("Compound: " + Compound);
         System.out.println("Capacity: " + Capacity);
         System.out.println("Price: " + Price);
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
