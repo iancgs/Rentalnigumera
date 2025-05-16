@@ -3,13 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/AdminInternalPage/users.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/rental/tracker/login.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/Dashboard/User.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/Dashboard/Admin.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/AdminInternalPage/Payment.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/AdminInternalPage/Property.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Property%20Rental%20Tracker/Rentalnigumera/src/AdminInternalPage/home.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/config/TenantSession.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/AdminInternalPage/users.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/AdminInternalPage/Tenant.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/AdminInternalPage/Property.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/internalDialog/selectProperty.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/internalDialog/review.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/rental/tracker/login.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/internalDialog/addTenant.java</file>
+            <file>file:/C:/Users/HP/Desktop/John%20Docs/Java%20files/Rentalnigumera/src/Dashboard/Admin.java</file>
         </group>
     </open-files>
 </project-private>

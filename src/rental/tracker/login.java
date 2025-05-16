@@ -129,59 +129,61 @@ public class login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String username = user.getText();
-String password = new String(pass.getPassword());
-// Get selected role
+        String password = new String(pass.getPassword());
 
-if (username.isEmpty() || password.isEmpty()) {
-    JOptionPane.showMessageDialog(this, "Please enter both username and password.", "Login Error", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-
-connectDB conf = new connectDB(); // Create an instance of dbConnector
-Connection con = conf.getConnection(); // Get connection
-
-String sql = "SELECT password, role FROM user WHERE username = ?";
-
-try {
-    PreparedStatement pst = con.prepareStatement(sql);
-    pst.setString(1, username);
-    ResultSet rs = pst.executeQuery();
-
-    if (rs.next()) {
-        String storedPassword = rs.getString("password");
-        String roleFromDB = rs.getString("role");
-
-        if (storedPassword.equals(password)) { // Ensure proper hashing if applicable
-            if (roleFromDB.equalsIgnoreCase(roleFromDB)) { 
-                JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                // Redirect based on role
-                if ("Admin".equalsIgnoreCase(roleFromDB)) {
-                    Admin admin = new Admin();
-                    admin.setVisible(true);
-                } else if ("User".equalsIgnoreCase(roleFromDB)) {
-                    User user = new User();
-                    user.setVisible(true);
-                }
-
-                this.dispose(); // Close login form
-            } else {
-                JOptionPane.showMessageDialog(this, "Incorrect role selection!", "Login Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Error", JOptionPane.ERROR_MESSAGE);
+        // Validate empty input
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both username and password.", "Login Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Error", JOptionPane.ERROR_MESSAGE);
-    }
 
-    rs.close();
-    pst.close();
-    con.close();
-} catch (SQLException ex) {
-    JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-}
-        
+        connectDB conf = new connectDB(); // Create an instance of dbConnector
+        Connection con = conf.getConnection(); // Get connection
+
+        String sql = "SELECT password, role, status FROM user WHERE username = ?";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, username);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                String storedPassword = rs.getString("password");
+                String roleFromDB = rs.getString("role");
+                String status = rs.getString("status");
+
+                if (storedPassword.equals(password)) { // Ensure proper hashing if applicable
+                    if ("Pending".equalsIgnoreCase(status)) {
+                        JOptionPane.showMessageDialog(this, "Your account is pending approval. Please contact admin.", "Login Restricted", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    // Redirect based on role
+                    JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                    if ("Admin".equalsIgnoreCase(roleFromDB)) {
+                        Admin admin = new Admin();
+                        admin.setVisible(true);
+                    } else if ("User".equalsIgnoreCase(roleFromDB)) {
+                        User user = new User();
+                        user.setVisible(true);
+                    }
+
+                    this.dispose(); // Close login form
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            rs.close();
+            pst.close();
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked

@@ -14,7 +14,7 @@ public class connectDB {
     
     public connectDB(){
         try {
-            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/property rental tracker", "root", "");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/property_rental_tracker", "root", "");
         } 
         catch (SQLException ex) {
             System.out.println("Can't connect to database: " + ex.getMessage());

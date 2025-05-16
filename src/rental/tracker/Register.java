@@ -35,7 +35,7 @@ public class Register extends javax.swing.JFrame {
         cp = new javax.swing.JPasswordField();
         pw = new javax.swing.JPasswordField();
         Back = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        signupBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -125,15 +125,15 @@ public class Register extends javax.swing.JFrame {
         jPanel1.add(Back);
         Back.setBounds(390, 420, 110, 40);
 
-        jButton2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButton2.setText("Sign up");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        signupBtn.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        signupBtn.setText("Sign up");
+        signupBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                signupBtnActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2);
-        jButton2.setBounds(530, 420, 110, 40);
+        jPanel1.add(signupBtn);
+        signupBtn.setBounds(530, 420, 110, 40);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -160,7 +160,7 @@ public class Register extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_BackMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void signupBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupBtnActionPerformed
         if(fn.getText().isEmpty() 
                 || ln.getText().isEmpty()
                 || un.getText().isEmpty()
@@ -190,28 +190,29 @@ public class Register extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Password must be at least 8 characters and include:\n- One uppercase letter\n- One lowercase letter\n- One number\n- One special character (@#$%^&+=!)", 
                                               "Error", JOptionPane.ERROR_MESSAGE);
                } 
-            else {
+            else{
                 // Insert into database
                 connectDB con = new connectDB();
-                int result = con.InsertData("INSERT INTO user (f_name, l_name, username, email, role, password) "
-                       + "VALUES('"+fn.getText()+"',"
-                               + "'"+ln.getText()+"',"
-                               + "'"+un.getText()+"',"
-                               + "'"+em.getText()+"',"
-                               + "'"+rl.getSelectedItem()+"',"
-                               + "'"+pw.getText()+"')");
-                   if (result == 1) {
-                       JOptionPane.showMessageDialog(null, "Inserted Successfully!");
-                       new login().setVisible(true);
-                       this.dispose();
-                   } 
-                   else {
-                       JOptionPane.showMessageDialog(null, "Registration failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-                   }
-               }
-           }
-       }
-    }//GEN-LAST:event_jButton2ActionPerformed
+                int result = con.InsertData("INSERT INTO user (f_name, l_name, username, email, role, password, status) "
+                       + "VALUES('" + fn.getText() + "',"
+                               + "'" + ln.getText() + "',"
+                               + "'" + un.getText() + "',"
+                               + "'" + em.getText() + "',"
+                               + "'" + rl.getSelectedItem() + "',"
+                               + "'" + pw.getText() + "',"
+                               + "'Pending')"); // Default status
+
+                if (result == 1) {
+                    JOptionPane.showMessageDialog(null, "Registered successfully! Your account is pending approval.");
+                    new login().setVisible(true);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Registration failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                }
+            }
+        }
+    }//GEN-LAST:event_signupBtnActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -251,7 +252,6 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JPasswordField cp;
     private javax.swing.JTextField em;
     private javax.swing.JTextField fn;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -265,6 +265,7 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JTextField ln;
     private javax.swing.JPasswordField pw;
     private javax.swing.JComboBox<String> rl;
+    private javax.swing.JButton signupBtn;
     private javax.swing.JTextField un;
     // End of variables declaration//GEN-END:variables
 }

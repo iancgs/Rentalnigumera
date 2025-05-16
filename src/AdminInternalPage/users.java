@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JDesktopPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-import net.proteanit.sql.DbUtils;
+import javax.swing.table.DefaultTableModel;
 
 public class users extends javax.swing.JInternalFrame {
 
@@ -22,17 +22,25 @@ public class users extends javax.swing.JInternalFrame {
     }
     
    public void displayData(){
+        
+        connectDB dbc = new connectDB();
         try{
-            connectDB dbc = new connectDB();
-            ResultSet rs = dbc.getData("SELECT * FROM user");
+           ResultSet rs = dbc.getData("SELECT * FROM user");         
+           DefaultTableModel model = (DefaultTableModel)user_tbl.getModel();
+           model.setRowCount(0);
            
-            user_tbl.setModel(DbUtils.resultSetToTableModel(rs));
-             rs.close();
+           while(rs.next()){
+               model.addRow(new String[]{rs.getString(1), 
+                   rs.getString(2), 
+                   rs.getString(3), 
+                   rs.getString(4), 
+                   rs.getString(5), 
+                   rs.getString(6), 
+                   rs.getString(8)});             
+           }
         }catch(SQLException ex){
             System.out.println("Errors: "+ex.getMessage());
-
         }
-
     }
 
     @SuppressWarnings("unchecked")
@@ -47,23 +55,24 @@ public class users extends javax.swing.JInternalFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
+        jPanel1.setPreferredSize(new java.awt.Dimension(740, 510));
         jPanel1.setLayout(null);
 
         user_tbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "User ID", "First Name", "Last Name", "Username", "Email", "Role", "Status"
             }
         ));
         sds.setViewportView(user_tbl);
 
         jPanel1.add(sds);
-        sds.setBounds(0, 0, 500, 280);
+        sds.setBounds(10, 10, 720, 410);
 
         jButton1.setBackground(new java.awt.Color(102, 102, 102));
         jButton1.setText("Refresh");
@@ -73,7 +82,7 @@ public class users extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton1);
-        jButton1.setBounds(380, 310, 73, 40);
+        jButton1.setBounds(610, 450, 110, 40);
 
         add_button.setBackground(new java.awt.Color(102, 102, 102));
         add_button.setText("Add");
@@ -83,7 +92,7 @@ public class users extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(add_button);
-        add_button.setBounds(20, 310, 63, 40);
+        add_button.setBounds(220, 450, 110, 40);
 
         jButton3.setBackground(new java.awt.Color(102, 102, 102));
         jButton3.setText("Edit");
@@ -93,7 +102,7 @@ public class users extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton3);
-        jButton3.setBounds(140, 310, 73, 40);
+        jButton3.setBounds(350, 450, 110, 40);
 
         jButton4.setBackground(new java.awt.Color(102, 102, 102));
         jButton4.setText("Delete");
@@ -103,17 +112,17 @@ public class users extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton4);
-        jButton4.setBounds(260, 310, 73, 40);
+        jButton4.setBounds(480, 450, 110, 40);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
